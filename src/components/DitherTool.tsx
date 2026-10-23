@@ -5,7 +5,7 @@ import Controls from "./Controls";
 import Presets, { type Preset } from "./Presets";
 import Timeline from "./Timeline";
 import type { KeyState } from "./KeyButton";
-import { DitherEngine, placeholderImage, type Focus } from "@/lib/engine";
+import { DitherEngine, type Focus } from "@/lib/engine";
 import { GROUPS, defaultParams, glyphChars, presetParams, sanitizeParams, withParam, type Params, type Value } from "@/lib/params";
 import { loadImage, loadSession, saveImage, saveSession } from "@/lib/session";
 import { VIDEO_SECONDS, recordMp4 } from "@/lib/video";
@@ -19,11 +19,12 @@ const GUIDE_CSS_PX = 1.5; // outline width on screen
 // Row labels, prefixed with their section where a label alone is ambiguous ("Amount")
 const LABELS = new Map(GROUPS.flatMap(g => g.rows.map(r => [r.id, r.label === "Amount" ? `${g.title} amount` : r.label] as const)));
 const AUTOSAVE_MS = 400;
+const DEFAULT_IMAGE = "/default.jpg"; // shown until an image is dropped or picked
 
 export default function DitherTool() {
   const [params, setParams] = useState<Params>(defaultParams);
   const [focus, setFocus] = useState<Focus>({ x: 0.5, y: 0.5 });
-  const [img, setImg] = useState({ w: 1600, h: 1000 });
+  const [img, setImg] = useState({ w: 1920, h: 1080 });
   const [stage, setStage] = useState({ w: 0, h: 0 });
   const [error, setError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -104,15 +105,14 @@ export default function DitherTool() {
       return;
     }
     engineRef.current = engine;
-    const ph = placeholderImage();
-    engine.setSource(ph, ph.width, ph.height);
-    setImg({ w: engine.width, h: engine.height });
-
     // Pick up where the last session left off
     const s = loadSession();
     if (s) { setParams(s.params); setFocus(s.focus); setTimeline(s.timeline); }
     restored.current = true;
-    loadImage().then(b => { if (b && !imageChosen.current) showImage(b, false); });
+    // The stored session image, else the bundled default
+    loadImage()
+      .then(b => b ?? fetch(DEFAULT_IMAGE).then(r => r.ok ? r.blob() : null))
+      .then(b => { if (b && !imageChosen.current) showImage(b, false); });
 
     let raf = 0;
     const loop = (now: number) => {
