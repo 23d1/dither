@@ -1,0 +1,11 @@
+# Render Blueprint: the app is a static export (next.config.ts -> output: "export"),
+# so it deploys as a free static site serving ./out.
+services:
+  - type: web
+    name: focal-dither
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./out
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
