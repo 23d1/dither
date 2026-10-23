@@ -25,10 +25,19 @@ and publish directory `out`.
 
 ## Using it
 
-- Drag on the image to move the focus. Drop, paste or upload an image to replace the sample.
+- Drag on the image to move the focus from where it is; double-click to put it under the cursor. Drop, paste or upload an image to replace the sample.
 - **H** or the **Guide** switch turns off the outline, focus marker and field view to preview the final render.
   Exports never include the guide.
-- **Export MP4** (dimmed unless something animates) renders 5 seconds at 30 fps to an H.264 MP4, frame by frame,
+- **Timeline** (under the image) works like After Effects. Click the ◇ next to any setting (or **◇ Animate
+  focus**) to animate it: it keys the current value at the playhead and the setting gets its own row in the
+  timeline. Scrub on the ruler, change the setting (or drag the focus) and it's keyed there. In a row, ◀ ▶ jump
+  between its keys, ◆ adds or removes the key at the playhead, ✕ stops animating it (keeping its current value).
+  Drag a key to retime it, Alt-click to delete it. Settings you haven't animated stay global and apply at every
+  time. Sliders, the focus and colours blend between keys (Ease or Linear); switches and dropdowns change at the
+  key. **Space** plays and pauses, **Clear** stops all animation and keeps the current look. The ASCII character
+  set can't be animated. The timeline is saved with the session and with presets.
+- **Export MP4** (dimmed unless something animates) renders the timeline when it has two or more keyframes,
+  otherwise 5 seconds of the Animate motion, at 30 fps to an H.264 MP4, frame by frame,
   so the clip is smooth however long encoding takes. It needs a browser with WebCodecs (current Chrome,
   Edge, Safari or Firefox).
 - Your last settings, focus and image are saved automatically in this browser and come back on reload
@@ -45,6 +54,8 @@ and publish directory `out`.
   bands (the width over which one square size wins), so it looks the same at any image size.
 - **Drift** (under Global, needs Animate) sets the dispersion in motion: squares near an edge wander in and out
   of the influence, and with Organic on the islands, holes and outline slowly flow.
+- **Outside** turns everything the effect doesn't reach into a solid colour (Amount blends from the image).
+  Squares sit fully on the colour, and the softer effects fade into it with their strength.
 - **ASCII**: pick a character set from the dropdown or type your own. The set is sorted by how much ink
   each glyph draws, and it is scaled so the largest glyph fills its square. Each square is either "plain"
   (coloured glyph on black) or "mosaic" (filled square with a contrasting glyph). Dense glyphs can scramble

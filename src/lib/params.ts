@@ -6,7 +6,7 @@ export type Params = Record<string, Value>;
 export type Row = {
   id: string;
   label: string;
-  type?: "range" | "check" | "select" | "text";
+  type?: "range" | "check" | "select" | "text" | "color";
   min?: number;
   max?: number;
   step?: number;
@@ -100,6 +100,12 @@ export const GROUPS: Group[] = [
     { id: "scrSpeed", label: "Scr. speed",  min: 0.5, max: 30, step: 0.5, val: 5, fmt: v => v + "/s" },
     { id: "glyphMin", label: "Min glyph",   min: 2, max: 48, step: 1, val: 8, fmt: px },
   ]},
+  // Everything the effect doesn't reach becomes a flat colour; partly affected
+  // areas blend into it with their strength, so edges keep their falloff and scatter
+  { title: "Outside", toggle: "solidOn", on: false, rows: [
+    { id: "solid",      label: "Amount", val: 1 },
+    { id: "solidColor", label: "Color",  type: "color", val: "#000000" },
+  ]},
 ];
 
 // View-only settings that presets don't carry
@@ -116,8 +122,8 @@ export function defaultParams(): Params {
 
 // Keep only known keys whose type matches the default, so old or hand-edited
 // presets can't break the shader. Missing keys fall back to defaults.
-// Sliders, to clamp loaded values into their range
-const RANGES = new Map(GROUPS.flatMap(g => g.rows).filter(r => !r.type || r.type === "range").map(r => [r.id, r]));
+// Sliders, to clamp loaded values into their range (and to interpolate on the timeline)
+export const RANGES = new Map(GROUPS.flatMap(g => g.rows).filter(r => !r.type || r.type === "range").map(r => [r.id, r]));
 
 export function sanitizeParams(input: unknown): Params {
   const out = defaultParams();
@@ -140,4 +146,13 @@ export function presetParams(p: Params): Params {
 // The characters the ASCII atlas is built from
 export function glyphChars(p: Params): string {
   return Number(p.charset) === UNICODE_SET ? unicodeChars() : String(p.chars);
+}
+
+// One control change. The charset dropdown and the chars field stay in sync:
+// picking a set fills the field, typing switches the dropdown to Custom.
+export function withParam(p: Params, id: string, v: Value): Params {
+  const next = { ...p, [id]: v };
+  if (id === "charset" && Number(v) >= 0) next.chars = CHARSETS[Number(v)][1];
+  if (id === "chars") next.charset = CHARSETS.findIndex((c, i) => i !== UNICODE_SET && c[1] === v);
+  return next;
 }

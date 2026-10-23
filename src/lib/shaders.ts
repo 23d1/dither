@@ -40,6 +40,8 @@ uniform float uSpread;     // px: squares sample the field this far off-center, 
 
 // Effects
 uniform float uPix, uBlur, uBlurMax, uNoise, uDither, uDLevels, uMono;
+uniform float uSolid;      // Outside: how far unaffected areas turn into uSolidCol
+uniform vec3  uSolidCol;
 
 // ASCII
 uniform float uAscii, uGCount, uInvert, uPlain, uContrast, uSat, uScramble, uScrSpeed, uGlyphMin;
@@ -172,6 +174,7 @@ vec3 disk(vec2 p, float rad) {
 vec3 shade(vec2 px, float fp) {
   vec3 orig = src(px, 0.0);
   if (uShowField > 0.5) return orig * 0.25 + vec3(0.78, 1.0, 0.24) * fp * 0.85;
+  vec3 outside = mix(orig, uSolidCol, uSolid);
 
   // Squares halve from max to min size. A square is used where the field at its
   // (spread-jittered) center clears 1 - (i+1)/N, so big squares sit where the field is strong and
@@ -200,7 +203,7 @@ vec3 shade(vec2 px, float fp) {
   }
 
   bool cell = s > 0.0;
-  if (!cell && fp <= 0.0) return orig;
+  if (!cell && fp <= 0.0) return outside;
 
   // With squares on, a whole square shares its strength; otherwise follow the smooth field
   bool squares = cell && uPix > 0.0;
@@ -262,6 +265,9 @@ vec3 shade(vec2 px, float fp) {
     col = mix(col, asc, uAscii * ag * smoothstep(0.0, 0.3, t));
   }
 
+  // Outside: squares stand fully on the solid colour; elsewhere the effect
+  // fades into it as its strength drops
+  if (uSolid > 0.0) col = mix(outside, col, squares ? 1.0 : smoothstep(0.0, 0.25, fp));
   return clamp(col, 0.0, 1.0);
 }
 

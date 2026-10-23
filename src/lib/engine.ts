@@ -201,6 +201,9 @@ export class DitherEngine {
     f1("uDither", n("dither") * on("ditherOn"));
     f1("uDLevels", n("dLevels"));
     f1("uMono", n("mono"));
+    f1("uSolid", n("solid") * on("solidOn"));
+    const hex = /^#[0-9a-f]{6}$/i.test(String(p.solidColor)) ? String(p.solidColor) : "#000000";
+    gl.uniform3f(U.uSolidCol, ...[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255) as [number, number, number]);
 
     f1("uAscii", n("ascii") * on("asciiOn"));
     f1("uGCount", this.glyphCount);

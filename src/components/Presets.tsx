@@ -3,8 +3,10 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import type { Focus } from "@/lib/engine";
 import type { Params } from "@/lib/params";
+import type { Timeline } from "@/lib/timeline";
 
-export type Preset = { params: Params; focus: Focus };
+// timeline is optional: presets saved before the timeline existed have none
+export type Preset = { params: Params; focus: Focus; timeline?: Timeline };
 type Store = Record<string, Preset>;
 
 const KEY = "focal-dither:presets";
@@ -76,9 +78,10 @@ export default function Presets({ current, apply }: Props) {
     try {
       const data = JSON.parse(await file.text());
       if (!data || typeof data.params !== "object") throw new Error("missing params");
-      apply({ params: data.params, focus: data.focus });
+      const preset: Preset = { params: data.params, focus: data.focus ?? { x: 0.5, y: 0.5 }, timeline: data.timeline };
+      apply(preset);
       const n = typeof data.name === "string" && data.name.trim() ? data.name.trim() : file.name.replace(/\.json$/i, "");
-      if (write({ ...store, [n]: { params: data.params, focus: data.focus ?? { x: 0.5, y: 0.5 } } })) setPicked(n);
+      if (write({ ...store, [n]: preset })) setPicked(n);
     } catch {
       alert("That file isn't a Focal Dither preset.");
     }

@@ -1,15 +1,16 @@
-// Autosave of the last session: settings + focus in localStorage, the image in
+// Autosave of the last session: settings, focus and timeline in localStorage, the image in
 // IndexedDB (localStorage only holds ~5MB of text, too small for most photos).
 // Every call swallows storage errors: losing the autosave must never break the app.
 import type { Focus } from "./engine";
 import { sanitizeParams, VIEW_KEYS, type Params } from "./params";
+import { clampFocus, sanitizeTimeline, type Timeline } from "./timeline";
 
 const KEY = "focal-dither:session";
 const DB = "focal-dither";
 const STORE = "files";
 const IMAGE = "last-image";
 
-export type Session = { params: Params; focus: Focus };
+export type Session = { params: Params; focus: Focus; timeline: Timeline };
 
 export function loadSession(): Session | null {
   try {
@@ -20,10 +21,8 @@ export function loadSession(): Session | null {
     // sanitizeParams drops view keys (presets don't carry them); a session does
     for (const k of VIEW_KEYS) if (typeof data?.params?.[k] === "boolean") params[k] = data.params[k];
     const f = data?.focus;
-    const focus = f && Number.isFinite(f.x) && Number.isFinite(f.y)
-      ? { x: Math.min(1, Math.max(0, f.x)), y: Math.min(1, Math.max(0, f.y)) }
-      : { x: 0.5, y: 0.5 };
-    return { params, focus };
+    const focus = f && Number.isFinite(f.x) && Number.isFinite(f.y) ? clampFocus(f) : { x: 0.5, y: 0.5 };
+    return { params, focus, timeline: sanitizeTimeline(data?.timeline) };
   } catch { return null; }
 }
 

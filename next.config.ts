@@ -5,6 +5,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "export",
   images: { unoptimized: true },
+  // The dev-only Next badge defaults to bottom-left, on top of the timeline's play button
+  devIndicators: { position: "top-left" },
 };
 
 export default nextConfig;

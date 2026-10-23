@@ -3,7 +3,7 @@
 // (WebCodecs) through mediabunny.
 import { BufferTarget, CanvasSource, Mp4OutputFormat, Output, QUALITY_HIGH, canEncodeVideo } from "mediabunny";
 
-export const VIDEO_SECONDS = 5;
+export const VIDEO_SECONDS = 5; // without a timeline
 export const VIDEO_FPS = 30;
 
 // H.264 needs even dimensions and has a size ceiling that varies by browser;
@@ -21,6 +21,7 @@ export async function recordMp4(
   src: HTMLCanvasElement,
   draw: (timeMs: number) => void,
   onProgress: (done: number) => void,
+  seconds = VIDEO_SECONDS,
 ): Promise<Blob> {
   if (typeof VideoEncoder === "undefined") throw new Error("This browser can't encode video (no WebCodecs).");
   const size = await encodableSize(src.width, src.height);
@@ -37,7 +38,7 @@ export async function recordMp4(
   output.addVideoTrack(video, { frameRate: VIDEO_FPS });
   await output.start();
 
-  const frames = VIDEO_SECONDS * VIDEO_FPS;
+  const frames = Math.max(1, Math.round(seconds * VIDEO_FPS));
   for (let i = 0; i < frames; i++) {
     draw((i / VIDEO_FPS) * 1000);
     x.drawImage(src, 0, 0, c.width, c.height);
