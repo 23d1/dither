@@ -41,27 +41,27 @@ const px = (v: number) => `${v}px`;
 
 export const GROUPS: Group[] = [
   { title: "Global", rows: [
-    { id: "guide",     label: "Guide (H)",  type: "check", val: true },
-    { id: "scale",     label: "Scale",      min: 0.1, max: 4, step: 0.01, val: 1, fmt: v => v.toFixed(2) + "×" },
+    { id: "guide",     label: "Guide (H)",  type: "check", val: false },
+    { id: "scale",     label: "Scale",      min: 0.1, max: 4, step: 0.01, val: 0.82, fmt: v => v.toFixed(2) + "×" },
     { id: "animate",   label: "Animate",    type: "check", val: true },
-    { id: "drift",     label: "Drift",      val: 0.25 },
+    { id: "drift",     label: "Drift",      val: 0.56 },
     { id: "showField", label: "Show field", type: "check", val: false },
   ]},
   { title: "Shape", rows: [
-    { id: "shape",    label: "Shape",    type: "select", options: SHAPES.map((s, i) => [s, i]), val: 0 },
+    { id: "shape",    label: "Shape",    type: "select", options: SHAPES.map((s, i) => [s, i]), val: SHAPES.indexOf("Ring") },
     { id: "radius",   label: "Radius",   min: 0.02, max: 1.5, step: 0.01, val: 0.3 },
     { id: "falloff",  label: "Falloff",  min: 0.2, max: 4, step: 0.01, val: 1 },
     { id: "aspect",   label: "Aspect",   min: -2, max: 2, step: 0.01, val: 0, fmt: v => (2 ** v).toFixed(2) },
     { id: "rotation", label: "Rotation", min: 0, max: 180, step: 1, val: 0, fmt: v => v + "°" },
   ]},
   // Off = the area follows the shape strictly. Amount blends toward the full noise settings.
-  { title: "Organic", toggle: "organicOn", on: false, rows: [
+  { title: "Organic", toggle: "organicOn", rows: [
     { id: "organic",    label: "Amount",      val: 1 },
     { id: "warp",       label: "Irregular",   val: 0.25 },
     { id: "warpScale",  label: "Irreg. size", min: 0.1, max: 4, step: 0.01, val: 1 },
     { id: "reach",      label: "Reach",       min: 0, max: 4, step: 0.01, val: 1.2, fmt: v => v.toFixed(2) + "r" },
     { id: "islands",    label: "Islands",     val: 0.4 },
-    { id: "islandAmt",  label: "Island str.", val: 0.6 },
+    { id: "islandAmt",  label: "Island str.", val: 1 },
     { id: "islandSize", label: "Island size", min: 4, max: 400, step: 1, val: 56, fmt: px },
     { id: "holes",      label: "Holes",       val: 0.15 },
     { id: "seed",       label: "Seed",        min: 0, max: 100, step: 1, val: 7, fmt: String },
@@ -86,10 +86,10 @@ export const GROUPS: Group[] = [
     { id: "dLevels", label: "Levels", min: 2, max: 16, step: 1, val: 4, fmt: String },
     { id: "mono",    label: "Mono",   val: 0 },
   ]},
-  { title: "ASCII", toggle: "asciiOn", on: false, rows: [
+  { title: "ASCII", toggle: "asciiOn", rows: [
     { id: "ascii",    label: "Amount",      val: 1 },
-    { id: "charset",  label: "Set",         type: "select", options: [[CHARSETS[UNICODE_SET][0], UNICODE_SET], ...CHARSETS.slice(0, UNICODE_SET).map((c, i): [string, number] => [c[0], i]), ["Custom", -1]], val: 1 },
-    { id: "chars",    label: "Chars",       type: "text", val: CHARSETS[1][1], placeholder: "all of Unicode · type your own" },
+    { id: "charset",  label: "Set",         type: "select", options: [[CHARSETS[UNICODE_SET][0], UNICODE_SET], ...CHARSETS.slice(0, UNICODE_SET).map((c, i): [string, number] => [c[0], i]), ["Custom", -1]], val: 7 },
+    { id: "chars",    label: "Chars",       type: "text", val: CHARSETS[7][1], placeholder: "all of Unicode · type your own" },
     { id: "sortInk",  label: "Sort by ink", type: "check", val: true },
     { id: "fitEach",  label: "Fit each",    type: "check", val: true },
     { id: "invert",   label: "Dark=dense",  type: "check", val: false },
