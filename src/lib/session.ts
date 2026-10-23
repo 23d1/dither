@@ -3,7 +3,7 @@
 // Every call swallows storage errors: losing the autosave must never break the app.
 import type { Focus } from "./engine";
 import { sanitizeParams, VIEW_KEYS, type Params } from "./params";
-import { clampFocus, sanitizeTimeline, type Timeline } from "./timeline";
+import { DEFAULT_FOCUS, clampFocus, sanitizeTimeline, type Timeline } from "./timeline";
 
 const KEY = "focal-dither:session";
 const DB = "focal-dither";
@@ -21,7 +21,7 @@ export function loadSession(): Session | null {
     // sanitizeParams drops view keys (presets don't carry them); a session does
     for (const k of VIEW_KEYS) if (typeof data?.params?.[k] === "boolean") params[k] = data.params[k];
     const f = data?.focus;
-    const focus = f && Number.isFinite(f.x) && Number.isFinite(f.y) ? clampFocus(f) : { x: 0.5, y: 0.5 };
+    const focus = f && Number.isFinite(f.x) && Number.isFinite(f.y) ? clampFocus(f) : DEFAULT_FOCUS;
     return { params, focus, timeline: sanitizeTimeline(data?.timeline) };
   } catch { return null; }
 }

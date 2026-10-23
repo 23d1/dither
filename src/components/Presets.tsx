@@ -3,7 +3,7 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import type { Focus } from "@/lib/engine";
 import type { Params } from "@/lib/params";
-import type { Timeline } from "@/lib/timeline";
+import { DEFAULT_FOCUS, type Timeline } from "@/lib/timeline";
 
 // timeline is optional: presets saved before the timeline existed have none
 export type Preset = { params: Params; focus: Focus; timeline?: Timeline };
@@ -78,7 +78,7 @@ export default function Presets({ current, apply }: Props) {
     try {
       const data = JSON.parse(await file.text());
       if (!data || typeof data.params !== "object") throw new Error("missing params");
-      const preset: Preset = { params: data.params, focus: data.focus ?? { x: 0.5, y: 0.5 }, timeline: data.timeline };
+      const preset: Preset = { params: data.params, focus: data.focus ?? DEFAULT_FOCUS, timeline: data.timeline };
       apply(preset);
       const n = typeof data.name === "string" && data.name.trim() ? data.name.trim() : file.name.replace(/\.json$/i, "");
       if (write({ ...store, [n]: preset })) setPicked(n);

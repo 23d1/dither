@@ -24,6 +24,8 @@ export const animatable = (id: string) => id === FOCUS || (!VIEW_KEYS.includes(i
 export const emptyTimeline = (): Timeline => ({ duration: 5, ease: "smooth", tracks: {} });
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
+// Where the focal point starts: upper right, 0-1 from the top-left
+export const DEFAULT_FOCUS: Focus = { x: 0.75, y: 0.25 };
 export const clampFocus = (f: Focus): Focus => ({ x: clamp(f.x, 0, 1), y: clamp(f.y, 0, 1) });
 const same = (a: number, b: number) => Math.abs(a - b) < SNAP;
 const isHex = (v: unknown): v is string => typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v);

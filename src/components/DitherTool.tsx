@@ -11,7 +11,7 @@ import { loadImage, loadSession, saveImage, saveSession } from "@/lib/session";
 import { VIDEO_SECONDS, recordMp4 } from "@/lib/video";
 import { pickGlyphs } from "@/lib/glyphs";
 import {
-  FOCUS, animatable, clampFocus, emptyTimeline, hasKey, isAnimated, moveKey, removeKey, removeTrack,
+  DEFAULT_FOCUS, FOCUS, animatable, clampFocus, emptyTimeline, hasKey, isAnimated, moveKey, removeKey, removeTrack,
   sample, sanitizeTimeline, setDuration, setKey, type Ease, type Timeline as TL,
 } from "@/lib/timeline";
 
@@ -23,7 +23,7 @@ const DEFAULT_IMAGE = "/default.jpg"; // shown until an image is dropped or pick
 
 export default function DitherTool() {
   const [params, setParams] = useState<Params>(defaultParams);
-  const [focus, setFocus] = useState<Focus>({ x: 0.5, y: 0.5 });
+  const [focus, setFocus] = useState<Focus>(DEFAULT_FOCUS);
   const [img, setImg] = useState({ w: 1920, h: 1080 });
   const [stage, setStage] = useState({ w: 0, h: 0 });
   const [error, setError] = useState<string | null>(null);
@@ -404,7 +404,7 @@ export default function DitherTool() {
           <button className="btn" onClick={() => editFocus({ x: 0.5, y: 0.5 })}>Center</button>
           <button className="btn" title="Default settings, no keyframes (keeps the image)" onClick={() => {
             setParams(p => ({ ...defaultParams(), guide: p.guide }));
-            setFocus({ x: 0.5, y: 0.5 });
+            setFocus(DEFAULT_FOCUS);
             setTimeline(tl => ({ ...emptyTimeline(), duration: tl.duration }));
             setPlaying(false);
             setPlayhead(0);

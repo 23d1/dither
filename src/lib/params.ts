@@ -42,13 +42,13 @@ const px = (v: number) => `${v}px`;
 export const GROUPS: Group[] = [
   { title: "Global", rows: [
     { id: "guide",     label: "Guide (H)",  type: "check", val: false },
-    { id: "scale",     label: "Scale",      min: 0.1, max: 4, step: 0.01, val: 0.82, fmt: v => v.toFixed(2) + "×" },
+    { id: "scale",     label: "Scale",      min: 0.1, max: 4, step: 0.01, val: 1, fmt: v => v.toFixed(2) + "×" },
     { id: "animate",   label: "Animate",    type: "check", val: true },
     { id: "drift",     label: "Drift",      val: 0.56 },
     { id: "showField", label: "Show field", type: "check", val: false },
   ]},
   { title: "Shape", rows: [
-    { id: "shape",    label: "Shape",    type: "select", options: SHAPES.map((s, i) => [s, i]), val: SHAPES.indexOf("Ring") },
+    { id: "shape",    label: "Shape",    type: "select", options: SHAPES.map((s, i) => [s, i]), val: 0 },
     { id: "radius",   label: "Radius",   min: 0.02, max: 1.5, step: 0.01, val: 0.3 },
     { id: "falloff",  label: "Falloff",  min: 0.2, max: 4, step: 0.01, val: 1 },
     { id: "aspect",   label: "Aspect",   min: -2, max: 2, step: 0.01, val: 0, fmt: v => (2 ** v).toFixed(2) },
